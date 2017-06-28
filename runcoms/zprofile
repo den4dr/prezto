@@ -30,6 +30,17 @@ if [[ -z "$LANG" ]]; then
 fi
 
 #
+# Some Other Env Values
+#
+
+# set Nodebrew Root to Brew
+export NODEBREW_ROOT=/usr/local/var/nodebrew
+
+# set Path for access to dashdb
+export DYLD_LIBRARY_PATH=/Applications/dsdriver/lib
+export DB2DSDRIVER_CFG_PATH=$HOME/.dsconfig
+
+#
 # Paths
 #
 
@@ -43,7 +54,10 @@ typeset -gU cdpath fpath mailpath path
 
 # Set the list of directories that Zsh searches for programs.
 path=(
+  /Applications/dsdriver/bin(N-/)
   /usr/local/{bin,sbin}
+  $NODEBREW_ROOT/current/bin
+  $HOME/.rbenv/bin
   $path
 )
 
@@ -66,11 +80,13 @@ fi
 # Temporary Files
 #
 #
-# Set TMPDIR if the variable is not set/empty or the directory doesn't exist
-if [[ -z "${TMPDIR}" ]]; then
-  export TMPDIR="/tmp/zsh-${UID}"
+if [[ -z "$TMPDIR" ]]; then
+  export TMPDIR="/tmp/zsh-$UID"
 fi
 
-if [[ ! -d "${TMPDIR}" ]]; then
-  mkdir -m 700 "${TMPDIR}"
+if [[ ! -d "$TMPDIR" ]]; then
+  mkdir "$TMPDIR"
+  chmod 700 "$TMPDIR"
 fi
+
+eval "$(rbenv init -)"
