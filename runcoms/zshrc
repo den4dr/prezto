@@ -5,9 +5,94 @@
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
 
+# start systemd
+# SYSTEMD_PID=$(ps -fe | grep '/lib/systemd/systemd --unit=multi-user.target$' | grep -v unshare | awk '{print $2}')
+# if [ -n "$SYSTEMD_PID" ] && [ "$SYSTEMD_PID" != "1" ]; then
+#   if [ -z "$1" ]; then
+#     /usr/libexec/nslogin
+#     exit
+#   fi
+# fi
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
 # Customize to your needs...
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+#
+# Less
+#
+
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X and -F (exit if the content fits on one screen) to enable it.
+export LESS='-F -g -i -M -R -S -w -X -z-4'
+
+# Set the Less input preprocessor.
+# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+if (( $#commands[(i)lesspipe(|.sh)] )); then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+fi
+
+# Anyenv autoloader
+export PATH="$HOME/.anyenv/bin:$PATH"
+eval "$(anyenv init -)"
+# eval "$(rbenv init -)"
+eval "$(nodenv init - --no-rehash)"
+
+# Setting For Goenv
+export GOENV_ROOT=$HOME/.goenv
+export PATH=$GOENV_ROOT/bin:$PATH
+eval "$(goenv init -)"
+export PATH="$GOROOT/bin:$PATH"
+export PATH="$PATH:$GOPATH/bin"
+
+# # Pyenv Settings
+export PYENV_ROOT="$HOME/.anyenv/envs/pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+eval "$(pyenv init --path)"
+
+
+# Windows Host Setting
+# export WSL_HOST=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}')
+# Display Setting
+export DISPLAY=:0
+
+# For Android SDK
+export ANDROID_SDK_ROOT=/home/den4dr/Android-sdk
+export PATH=$PATH:$ANDROID_SDK_ROOT/platform-tools
+export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/tools/bin
+export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
+
+# Docker Settings
+# bash $(pack completion)
+
+# shortcut alias
+alias iiu="intellij-idea-ultimate"
+alias chrome="google-chrome > /dev/null 2>&1"
+
+#Setting AWS Default Profile
+export AWS_DEFAULT_PROFILE=prd-sandbox
+
+#Setting usr binary
+export PATH=$PATH:$HOME/bin
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/den4dr/.sdkman"
+[[ -s "/home/den4dr/.sdkman/bin/sdkman-init.sh" ]] && source "/home/den4dr/.sdkman/bin/sdkman-init.sh"
+
+# tabtab source for packages
+# uninstall by removing these lines
+[[ -f ~/.config/tabtab/zsh/__tabtab.zsh ]] && . ~/.config/tabtab/zsh/__tabtab.zsh || true
